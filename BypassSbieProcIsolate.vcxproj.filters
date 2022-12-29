@@ -18,5 +18,16 @@
     <ClCompile Include="BypassSbieProcIsolate.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="Enum.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Enum.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="Common.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

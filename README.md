@@ -1,5 +1,5 @@
 # BypassSbieProcIsolate
-The purpose of this project is to investigate some ways that process isolation can be bypassed in sandboxie. Then limit the number of own processes in the sandbox
+The purpose of this project is to investigate some ways that process isolation can be bypassed in sandboxie. Then limit the number of own processes in the sandbox.This is a long-term project and I will continue to update it.
 
 ## True purpose
 sandboxie has some inadequacies in process isolation. This project was designed to detect sandboxie's process isolation weaknesses and try to fix them.

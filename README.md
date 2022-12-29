@@ -10,5 +10,9 @@ sandboxie has some inadequacies in process isolation. This project was designed 
 + inter process Communication outside (such as file, regedit ...)
 + Resource exclusives can also be used if only one process is allowed to open
 
+## warning
+Since this is test code, there are some coding specification issues. 
+And I'm not going to fix them 🙄
+
 ## todo
 Fix sandboxie

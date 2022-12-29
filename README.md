@@ -15,4 +15,4 @@ Since this is test code, there are some coding specification issues.
 And I'm not going to fix them 🙄
 
 ## todo
-Fix sandboxie
+modify sandboxie code to Plug these holes.

@@ -9,3 +9,6 @@ sandboxie has some inadequacies in process isolation. This project was designed 
 + inter process Communication inside (such as Shared memory, socket ...)
 + inter process Communication outside (such as file, regedit ...)
 + Resource exclusives can also be used if only one process is allowed to open
+
+## todo
+Fix sandboxie

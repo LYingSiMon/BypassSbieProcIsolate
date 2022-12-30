@@ -6,6 +6,14 @@ sandboxie has some inadequacies in process isolation. This project was designed 
 
 ## method for detecting the number of own processes
 + process enum (Or other features of the process, such as window features)
+  + CreateToolhelp32Snapshot
+  + EnumProcesses
+  + WTSEnumerateProcess
+  + ZwQuerySystemInformation
+  + DirectSystemCalls
+  + OpenProcess
+  + Performance Data
+  + Performance Data Helper
 + inter process Communication inside (such as Shared memory, socket ...)
 + inter process Communication outside (such as file, regedit ...)
 + Resource exclusives can also be used if only one process is allowed to open

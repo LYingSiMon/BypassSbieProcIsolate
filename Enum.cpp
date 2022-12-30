@@ -337,7 +337,7 @@ void Enum_PerformanceData()
 }
 
 
-void Enum_PDH()
+void Enum_PerformanceDataHelper()
 {
 	INT ProcCount = 0;
 	LPTSTR      szCounterListBuffer = NULL;
@@ -386,4 +386,166 @@ void Enum_PDH()
 	}
 
 	return ;
+}
+
+BOOL CALLBACK EnumWindowsProc(HWND hwnd, LPARAM lParam)
+{
+	INT* pProcCount = (INT*)lParam;
+	WCHAR WndText[MAX_PATH] = { 0 };
+	GetWindowText(hwnd, WndText, MAX_PATH);
+	
+	//printf("%S \n", WndText);
+	if (wcsstr(WndText, SELF_PROCNAME_W) != 0)
+	{
+		*pProcCount = *pProcCount + 1;
+	}
+
+	return TRUE;
+}
+void Enum_EnumWindows()
+{
+	INT ProcCount = 0;
+	EnumWindows(EnumWindowsProc ,(LPARAM)&ProcCount);
+
+	if (ProcCount > 1)
+	{
+		spdlog::error("[{}] ProcCount:{} ", __FUNCTION__, ProcCount);
+	}
+	else
+	{
+		spdlog::info("[{}] ProcCount:{} ", __FUNCTION__, ProcCount);
+	}
+}
+
+void Enum_EnumChildWindows()
+{
+	INT ProcCount = 0;
+	HWND hdesk = (HWND)0x10010;
+	if (!hdesk)
+	{
+		return;
+	}
+
+	EnumChildWindows(hdesk, EnumWindowsProc, (LPARAM)&ProcCount);
+
+	if (ProcCount > 1)
+	{
+		spdlog::error("[{}] ProcCount:{} ", __FUNCTION__, ProcCount);
+	}
+	else
+	{
+		spdlog::info("[{}] ProcCount:{} ", __FUNCTION__, ProcCount);
+	}
+}
+
+BOOL CALLBACK DeskEnum(LPWSTR desk, LPARAM lParam)
+{
+	HDESK hDesk = OpenDesktopW(desk, 0, FALSE, DESKTOP_READOBJECTS | DESKTOP_ENUMERATE);
+	if (hDesk)
+	{
+		HDESK hCurrentDesk = GetThreadDesktop(GetCurrentThreadId());
+		EnumDesktopWindows(hDesk, &EnumWindowsProc, lParam);
+	}
+	return TRUE;
+}
+BOOL CALLBACK  EnumWinStationProc(LPTSTR winsta, LPARAM lParam)
+{
+	HWINSTA current = GetProcessWindowStation();
+	HWINSTA hWinsta = OpenWindowStationW(winsta, FALSE, WINSTA_ENUMDESKTOPS);
+	if (hWinsta)
+	{
+		EnumDesktopsW(hWinsta, &DeskEnum, lParam);
+	}
+	return true;
+}
+void Enum_EnumDesktopWindows()
+{
+	INT ProcCount = 0;
+	EnumWindowStationsW(&EnumWinStationProc, (LPARAM)&ProcCount);
+
+	if (ProcCount > 1)
+	{
+		spdlog::error("[{}] ProcCount:{} ", __FUNCTION__, ProcCount);
+	}
+	else
+	{
+		spdlog::info("[{}] ProcCount:{} ", __FUNCTION__, ProcCount);
+	}
+}
+
+void Enum_GetWindow()
+{
+	INT ProcCount = 0;
+	HWND hDsktp = GetDesktopWindow();
+	HWND hNextWnd = hDsktp;
+	WCHAR szBuf[MAX_PATH] = { 0 };
+
+	hNextWnd = GetWindow(hDsktp, GW_CHILD);
+	do
+	{
+		GetWindowText(hNextWnd, szBuf, MAX_PATH);
+		if (wcsstr(szBuf, SELF_PROCNAME_W) != 0)
+		{
+			ProcCount++;
+		}
+
+	} while (NULL != (hNextWnd = GetWindow(hNextWnd, GW_HWNDNEXT)));
+
+	if (ProcCount > 1)
+	{
+		spdlog::error("[{}] ProcCount:{} ", __FUNCTION__, ProcCount);
+	}
+	else
+	{
+		spdlog::info("[{}] ProcCount:{} ", __FUNCTION__, ProcCount);
+	}
+}
+
+void Enum_EnumThreadWindows()
+{
+
+	INT ProcCount = 0;
+
+	for (int i = 0; i < 100000; i += 4)
+	{
+		EnumThreadWindows(i, EnumWindowsProc, (LPARAM)&ProcCount);
+	}
+
+	ProcCount /= 2;
+	if (ProcCount > 1)
+	{
+		spdlog::error("[{}] ProcCount:{} ", __FUNCTION__, ProcCount);
+	}
+	else
+	{
+		spdlog::info("[{}] ProcCount:{} ", __FUNCTION__, ProcCount);
+	}
+}
+
+void Enum_HotKey()
+{
+	INT ProcCount = 0;
+
+	for (int i = 0x70; i < 0x87; ++i)
+	{
+		if (RegisterHotKey(NULL, 1, MOD_ALT, i))
+		{
+			ProcCount = i - 0x70 + 1;
+			break;
+		}
+	}
+
+	if (ProcCount > 1)
+	{
+		spdlog::error("[{}] ProcCount:{} ", __FUNCTION__, ProcCount);
+	}
+	else
+	{
+		spdlog::info("[{}] ProcCount:{} ", __FUNCTION__, ProcCount);
+	}
+}
+
+void Enum_Test()
+{
+	
 }

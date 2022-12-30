@@ -16,6 +16,7 @@ void Test_Enum()
 {
     spdlog::info("============== [{}] ==============", __FUNCTION__);
 
+    // 进程名遍历
     Enum_CreateToolhelp32Snapshot();
     Enum_EnumProcesses();
     Enum_WTSEnumerateProcess();
@@ -23,7 +24,16 @@ void Test_Enum()
     Enum_DirectSystemCalls();
     Enum_OpenProcess();
     Enum_PerformanceData();
-    Enum_PDH();
+    Enum_PerformanceDataHelper();
+
+    // 进程特征遍历
+    Enum_EnumWindows();
+    Enum_EnumChildWindows();
+    Enum_EnumDesktopWindows();
+    Enum_GetWindow();
+    Enum_EnumThreadWindows();
+    Enum_HotKey();
+    Enum_Test();
 }
 
 int main()

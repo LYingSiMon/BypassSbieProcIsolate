@@ -8,8 +8,8 @@
 #include <stdio.h>
 
 /* 思路：
-* 借助 APIMonitor ，或 msdn 把所有的 API 都看一遍，
-* 找到可能利用的 API，写代码测试。
+* 1.借助 APIMonitor ，或 msdn 把所有的 API 都看一遍，找到可能利用的 API，写代码测试。
+* 2.重看 Windows 核心编程，找突破口
 */
 
 void Test_Enum()
@@ -20,7 +20,10 @@ void Test_Enum()
     Enum_EnumProcesses();
     Enum_WTSEnumerateProcess();
     Enum_ZwQuerySystemInformation();
+    Enum_DirectSystemCalls();
     Enum_OpenProcess();
+    Enum_PerformanceData();
+    Enum_PDH();
 }
 
 int main()

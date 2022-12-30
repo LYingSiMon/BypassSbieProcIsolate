@@ -30,4 +30,9 @@
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="syscall.asm">
+      <Filter>源文件</Filter>
+    </CustomBuild>
+  </ItemGroup>
 </Project>

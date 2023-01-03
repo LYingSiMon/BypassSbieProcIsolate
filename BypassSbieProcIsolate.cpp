@@ -31,8 +31,9 @@ void Test_Enum()
     Enum_EnumChildWindows();
     Enum_EnumDesktopWindows();
     Enum_EnumThreadWindows();
-    Enum_GetWindow();
+    Enum_GetNextWindow();
     Enum_LoopIsWindow();
+    Enum_FindWindowEx();
     Enum_HotKey();
 
     Enum_Test();

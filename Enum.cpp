@@ -473,7 +473,7 @@ void Enum_EnumDesktopWindows()
 	}
 }
 
-void Enum_GetWindow()
+void Enum_GetNextWindow()
 {
 	INT ProcCount = 0;
 	HWND hDsktp = GetDesktopWindow();
@@ -544,6 +544,34 @@ void Enum_LoopIsWindow()
 			}
 		}
 	}
+
+	if (ProcCount > 1)
+	{
+		spdlog::error("[{}] ProcCount:{} ", __FUNCTION__, ProcCount);
+	}
+	else
+	{
+		spdlog::info("[{}] ProcCount:{} ", __FUNCTION__, ProcCount);
+	}
+}
+
+void Enum_FindWindowEx()
+{
+	INT ProcCount = 0;
+	HWND child = NULL;
+	WCHAR buf[MAX_PATH];
+
+	do {
+		memset(buf, 0, MAX_PATH);
+		child = FindWindowEx(NULL, child, NULL, NULL);
+		GetWindowText(child, buf, MAX_PATH);
+
+		if (wcsstr(buf, SELF_PROCNAME_W) != 0)
+		{
+			ProcCount++;
+		}
+
+	} while (child);
 
 	if (ProcCount > 1)
 	{

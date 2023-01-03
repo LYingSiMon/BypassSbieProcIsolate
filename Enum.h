@@ -24,9 +24,11 @@ void Enum_EnumDesktopWindows();
 
 void Enum_EnumThreadWindows();
 
-void Enum_GetWindow();
+void Enum_GetNextWindow();
 
 void Enum_LoopIsWindow();
+
+void Enum_FindWindowEx();
 
 void Enum_HotKey();
 

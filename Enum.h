@@ -26,6 +26,8 @@ void Enum_EnumThreadWindows();
 
 void Enum_GetWindow();
 
+void Enum_LoopIsWindow();
+
 void Enum_HotKey();
 
 void Enum_Test();

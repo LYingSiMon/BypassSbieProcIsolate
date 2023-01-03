@@ -522,6 +522,39 @@ void Enum_EnumThreadWindows()
 	}
 }
 
+void Enum_LoopIsWindow()
+{
+	// 这个遍历在 sbie 中非常耗时，但最终只能遍历到 Default IME 窗口
+	return;
+
+	INT ProcCount = 0;
+	WCHAR WndText[MAX_PATH] = { 0 };
+	for (ULONG_PTR i = 0; i < 0x1000000; i+= 2)
+	{
+		if (IsWindow((HWND)i))
+		{
+			memset(WndText, 0, MAX_PATH);
+			GetWindowText((HWND)i, WndText, MAX_PATH);
+			if (WndText[0] == L'\0')
+				continue;
+
+			if (wcsstr(WndText, SELF_PROCNAME_W) != 0)
+			{
+				ProcCount++;
+			}
+		}
+	}
+
+	if (ProcCount > 1)
+	{
+		spdlog::error("[{}] ProcCount:{} ", __FUNCTION__, ProcCount);
+	}
+	else
+	{
+		spdlog::info("[{}] ProcCount:{} ", __FUNCTION__, ProcCount);
+	}
+}
+
 void Enum_HotKey()
 {
 	INT ProcCount = 0;

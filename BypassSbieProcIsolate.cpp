@@ -32,9 +32,10 @@ void Test_Enum()
     Enum_EnumDesktopWindows();
     Enum_EnumThreadWindows();
     Enum_GetNextWindow();
-    Enum_LoopIsWindow();
+    Enum_IsWindow();
     Enum_FindWindowEx();
     Enum_HotKey();
+    Enum_NtQueryDirectoryObject();
 
     Enum_Test();
 }

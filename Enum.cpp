@@ -12,6 +12,7 @@
 #include <map>
 #include <Pdh.h>
 #include <PdhMsg.h>
+#include <string>
 
 #pragma comment(lib,"WtsApi32.lib")
 #pragma comment(lib,"Pdh.lib")
@@ -522,7 +523,7 @@ void Enum_EnumThreadWindows()
 	}
 }
 
-void Enum_LoopIsWindow()
+void Enum_IsWindow()
 {
 	// 这个遍历在 sbie 中非常耗时，但最终只能遍历到 Default IME 窗口
 	return;
@@ -606,7 +607,151 @@ void Enum_HotKey()
 	}
 }
 
+HANDLE hMutex;
+int ObjRecursion(std::wstring path, INT* ProcCount)
+{
+#define BUFFER_SIZE     0x1000
+#define DIRECTORY_QUERY 0x0001
+#define NTSTATUS        ULONG
+
+	typedef struct _LSA_UNICODE_STRING {
+		USHORT Length;
+		USHORT MaximumLength;
+		PWSTR Buffer;
+	} UNICODE_STRING;
+
+	typedef struct _OBJDIR_INFORMATION {
+		UNICODE_STRING          ObjectName;
+		UNICODE_STRING          ObjectTypeName;
+		BYTE                    Data[1];
+	} OBJDIR_INFORMATION, * POBJDIR_INFORMATION;
+
+	typedef struct _OBJECT_ATTRIBUTES {
+		ULONG Length;
+		HANDLE RootDirectory;
+		UNICODE_STRING* ObjectName;
+		ULONG Attributes;
+		PVOID SecurityDescriptor;
+		PVOID SecurityQualityOfService;
+	} OBJECT_ATTRIBUTES;
+
+#define InitializeObjectAttributes( p, n, a, r, s ) { \
+    (p)->Length = sizeof( OBJECT_ATTRIBUTES );          \
+    (p)->RootDirectory = r;                             \
+    (p)->Attributes = a;                                \
+    (p)->ObjectName = n;                                \
+    (p)->SecurityDescriptor = s;                        \
+    (p)->SecurityQualityOfService = NULL;               \
+    }
+
+	typedef DWORD(WINAPI* NTQUERYDIRECTORYOBJECT)(HANDLE, OBJDIR_INFORMATION*, DWORD, DWORD, DWORD, DWORD*, DWORD*);
+	NTQUERYDIRECTORYOBJECT NtQueryDirectoryObject;
+
+	typedef DWORD(WINAPI* NTOPENDIRECTORYOBJECT)(HANDLE*, DWORD, OBJECT_ATTRIBUTES*);
+	NTOPENDIRECTORYOBJECT  NtOpenDirectoryObject;
+
+	// 创建一个 mutex
+	std::wstring SectionName = L"lysm_";
+	SectionName += std::to_wstring(GetCurrentProcessId());
+	if (!hMutex)
+	{
+		hMutex = CreateMutex(NULL, TRUE, SectionName.c_str());
+	}
+
+	HANDLE file_handle;
+	NTSTATUS status_code;
+	HMODULE hNtdll;
+	UNICODE_STRING unicode_str;
+	OBJECT_ATTRIBUTES path_attributes;
+	DWORD object_index = 0;
+	DWORD data_written = 0;
+
+	hNtdll = LoadLibrary(L"ntdll.dll");
+	if (!hNtdll)
+		return 0;
+
+	NtQueryDirectoryObject = (NTQUERYDIRECTORYOBJECT)GetProcAddress(hNtdll, "NtQueryDirectoryObject");
+	NtOpenDirectoryObject = (NTOPENDIRECTORYOBJECT)GetProcAddress(hNtdll, "NtOpenDirectoryObject");
+
+	unicode_str.Length = (USHORT)path.length() * 2;
+	unicode_str.MaximumLength = (USHORT)path.length() * 2 + 2;
+	unicode_str.Buffer = (PWSTR)path.c_str();
+	InitializeObjectAttributes(&path_attributes, &unicode_str, 0, NULL, NULL);
+
+	OBJDIR_INFORMATION* object_directory_info = (OBJDIR_INFORMATION*) ::HeapAlloc(GetProcessHeap(), 0, BUFFER_SIZE);
+	status_code = NtOpenDirectoryObject(&file_handle, DIRECTORY_QUERY, &path_attributes);
+	if (status_code != 0)
+		return 0;
+
+	status_code = NtQueryDirectoryObject(file_handle,
+		object_directory_info,
+		BUFFER_SIZE,
+		TRUE,
+		TRUE,
+		&object_index,
+		&data_written);
+	if (status_code != 0)
+		return 0;
+
+
+	do
+	{
+		if (!object_directory_info)
+			continue;
+
+		std::wstring cur_path = object_directory_info->ObjectName.Buffer;
+		std::wstring cur_type = object_directory_info->ObjectTypeName.Buffer;
+		std::wstring new_path;
+
+		if (path == L"\\")
+		{
+			new_path = path + cur_path;
+		}
+		else
+		{
+			new_path = path + L"\\" + cur_path;
+		}
+
+		if (cur_type == L"Directory") {
+			ObjRecursion(new_path, ProcCount);
+		}
+
+		if (cur_path.find(L"lysm_") != cur_path.npos)
+		{
+			*ProcCount += 1;
+		}
+
+		//printf("[%S] [%S] [%S] \n", 
+		//	path.c_str(),
+		//	cur_type.c_str(),
+		//	cur_path.c_str());
+	} while (NtQueryDirectoryObject(file_handle, object_directory_info,
+		BUFFER_SIZE, TRUE, FALSE, &object_index,
+		&data_written) == 0);
+
+
+	return 0;
+}
+void Enum_NtQueryDirectoryObject()
+{
+	// 需要管理员启动才能遍历出所有内容
+
+	INT ProcCount = 0;
+
+	ObjRecursion(L"\\", &ProcCount);
+
+	if (ProcCount > 1)
+	{
+		spdlog::error("[{}] ProcCount:{} ", __FUNCTION__, ProcCount);
+	}
+	else
+	{
+		spdlog::info("[{}] ProcCount:{} ", __FUNCTION__, ProcCount);
+	}
+	return ;
+}
+
 void Enum_Test()
 {
-	
+
 }

@@ -26,10 +26,12 @@ void Enum_EnumThreadWindows();
 
 void Enum_GetNextWindow();
 
-void Enum_LoopIsWindow();
+void Enum_IsWindow();
 
 void Enum_FindWindowEx();
 
 void Enum_HotKey();
+
+void Enum_NtQueryDirectoryObject();
 
 void Enum_Test();

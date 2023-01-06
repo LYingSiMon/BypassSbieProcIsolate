@@ -2,6 +2,8 @@
 //
 
 #include "Enum.h"
+#include "IpcInSide.h"
+#include "IpcOutSide.h"
 #include "spdlog/spdlog.h"
 
 #include <Windows.h>
@@ -16,33 +18,46 @@ void Test_Enum()
 {
     spdlog::info("============== [{}] ==============", __FUNCTION__);
 
-    // 进程名遍历
-    Enum_CreateToolhelp32Snapshot();
-    Enum_EnumProcesses();
-    Enum_WTSEnumerateProcess();
-    Enum_ZwQuerySystemInformation();
-    Enum_DirectSystemCalls();
-    Enum_OpenProcess();
-    Enum_PerformanceData();
-    Enum_PerformanceDataHelper();
+    //// 进程名遍历
+    //Enum_CreateToolhelp32Snapshot();
+    //Enum_EnumProcesses();
+    //Enum_WTSEnumerateProcess();
+    //Enum_ZwQuerySystemInformation();
+    //Enum_DirectSystemCalls();
+    //Enum_OpenProcess();
+    //Enum_PerformanceData();
+    //Enum_PerformanceDataHelper();
 
-    // 进程特征遍历
-    Enum_EnumWindows();
-    Enum_EnumChildWindows();
-    Enum_EnumDesktopWindows();
-    Enum_EnumThreadWindows();
-    Enum_GetNextWindow();
-    Enum_IsWindow();
-    Enum_FindWindowEx();
-    Enum_HotKey();
-    Enum_NtQueryDirectoryObject();
+    //// 进程特征遍历
+    //Enum_EnumWindows();
+    //Enum_EnumChildWindows();
+    //Enum_EnumDesktopWindows();
+    //Enum_EnumThreadWindows();
+    //Enum_GetNextWindow();
+    //Enum_IsWindow();
+    //Enum_FindWindowEx();
+    //Enum_HotKey();
+    //Enum_NtQueryDirectoryObject();
 
     Enum_Test();
+}
+
+void Test_IpcInSide()
+{
+    //IpcInSide_CreateNamedPipe();
+    //IpcInSide_BroadcastSystemMessage();
+}
+
+void Test_IpcOutSide()
+{
+
 }
 
 int main()
 {
     Test_Enum();
+    Test_IpcInSide();
+    Test_IpcOutSide();
 
     getchar();
 }

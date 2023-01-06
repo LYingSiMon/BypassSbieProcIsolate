@@ -145,10 +145,14 @@
   <ItemGroup>
     <ClCompile Include="BypassSbieProcIsolate.cpp" />
     <ClCompile Include="Enum.cpp" />
+    <ClCompile Include="IpcInSide.cpp" />
+    <ClCompile Include="IpcOutSide.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Common.h" />
     <ClInclude Include="Enum.h" />
+    <ClInclude Include="IpcInSide.h" />
+    <ClInclude Include="IpcOutSide.h" />
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="syscall.asm">

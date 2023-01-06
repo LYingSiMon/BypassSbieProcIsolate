@@ -21,12 +21,24 @@
     <ClCompile Include="Enum.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="IpcInSide.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="IpcOutSide.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Enum.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="Common.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="IpcInSide.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="IpcOutSide.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>

@@ -753,5 +753,22 @@ void Enum_NtQueryDirectoryObject()
 
 void Enum_Test()
 {
-
+	POINT point = { 0 };
+	HWND hwnd;
+	WCHAR Title[MAX_PATH] = { 0 };
+	for (int i = 0; i < 1920; ++i)
+	{
+		for (int j = 0; j < 1080; j++)
+		{
+			point.x = i;
+			point.y = j;
+			hwnd = WindowFromPoint(point);
+			if (hwnd)
+			{
+				memset(Title, 0, MAX_PATH);
+				GetWindowText(hwnd, Title, MAX_PATH);
+				printf("%S \n", Title);
+			}
+		}
+	}
 }

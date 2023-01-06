@@ -16,6 +16,7 @@ sandboxie has some inadequacies in process isolation. This project was designed 
   + Performance Data Helper
 + inter process Communication inside (such as Shared memory, socket ...)
 + inter process Communication outside (such as file, regedit ...)
++ upload hwid (or other unique identification) to server, then Check how many of the same hwid exist simultaneously
 + Resource exclusives can also be used if only one process is allowed to open
 
 ## warning

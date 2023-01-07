@@ -30,6 +30,8 @@ void Enum_IsWindow();
 
 void Enum_FindWindowEx();
 
+void Enum_WindowFromPoint();
+
 void Enum_HotKey();
 
 void Enum_NtQueryDirectoryObject();

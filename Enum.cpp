@@ -13,6 +13,7 @@
 #include <Pdh.h>
 #include <PdhMsg.h>
 #include <string>
+#include <vector>
 
 #pragma comment(lib,"WtsApi32.lib")
 #pragma comment(lib,"Pdh.lib")
@@ -751,24 +752,68 @@ void Enum_NtQueryDirectoryObject()
 	return ;
 }
 
-void Enum_Test()
+void Enum_WindowFromPoint()
 {
+	// WindowFromPhysicalPoint、RealChildWindowFromPoint 同理
+
+	std::vector<HWND> vecArr;
+	INT ProcCount = 0;
 	POINT point = { 0 };
 	HWND hwnd;
-	WCHAR Title[MAX_PATH] = { 0 };
+	CHAR Title[MAX_PATH] = { 0 };
 	for (int i = 0; i < 1920; ++i)
 	{
 		for (int j = 0; j < 1080; j++)
 		{
 			point.x = i;
 			point.y = j;
-			hwnd = WindowFromPoint(point);
+			hwnd = WindowFromPoint(point);			
 			if (hwnd)
 			{
+				auto iter = std::find(vecArr.begin(), vecArr.end(), hwnd);
+				if (iter != vecArr.end())
+				{
+					continue;
+				}
+				vecArr.push_back(hwnd);
+
 				memset(Title, 0, MAX_PATH);
-				GetWindowText(hwnd, Title, MAX_PATH);
-				printf("%S \n", Title);
+				if (!GetWindowTextA(hwnd, Title, MAX_PATH))
+				{
+					continue;
+				}
+
+				if (Title[0] != L'\0')
+				{
+					//printf("%llx [%d,%d] %s \n", (ULONG_PTR)hwnd, i, j, Title);
+					if (strstr(Title, SELF_PROCNAME_A) != 0)
+					{
+						ProcCount++;
+
+						DWORD pid = 0;
+						GetWindowThreadProcessId(hwnd, &pid);
+						if (pid != GetCurrentProcessId())
+						{
+							// sbie 对窗口句柄的权限做了限制，调用 CloseWindow 并不能关闭窗口
+							//CloseWindow(hwnd);
+						}
+					}
+				}
 			}
 		}
 	}
+
+	if (ProcCount > 1)
+	{
+		spdlog::error("[{}] ProcCount:{} ", __FUNCTION__, ProcCount);
+	}
+	else
+	{
+		spdlog::info("[{}] ProcCount:{} ", __FUNCTION__, ProcCount);
+	}
+}
+
+void Enum_Test()
+{
+	
 }

@@ -102,10 +102,14 @@ void IpcInSide_CreateNamedPipe()
 }
 
 int Count_BroadcastSystemMessage = 1;
+int Count_SendMessage = 1;
+int Count_PostMessage = 1;
 LRESULT CALLBACK __WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
 
-    UINT showMyAppMsg = RegisterWindowMessage(L"MYAPP_LYSM");
-    if (msg == showMyAppMsg)
+    UINT showMyAppMsg1 = RegisterWindowMessage(L"MYAPP_LYSM");
+    UINT showMyAppMsg2 = RegisterWindowMessage(L"IpcInSide_SendMessage");
+    UINT showMyAppMsg3 = RegisterWindowMessage(L"IpcInSide_PostMessage");
+    if (msg == showMyAppMsg1)
     {
         Count_BroadcastSystemMessage++;
         
@@ -116,6 +120,32 @@ LRESULT CALLBACK __WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
         else
         {
             spdlog::info("[IpcInSide_BroadcastSystemMessage] ProcCount:{} ", Count_BroadcastSystemMessage);
+        }
+    }
+    if (msg == showMyAppMsg2)
+    {
+        Count_SendMessage++;
+
+        if (Count_SendMessage > 1)
+        {
+            spdlog::error("[IpcInSide_SendMessage] ProcCount:{} ", Count_SendMessage);
+        }
+        else
+        {
+            spdlog::info("[IpcInSide_SendMessage] ProcCount:{} ", Count_SendMessage);
+        }
+    }
+    if (msg == showMyAppMsg2)
+    {
+        Count_PostMessage++;
+
+        if (Count_PostMessage > 1)
+        {
+            spdlog::error("[IpcInSide_PostMessage] ProcCount:{} ", Count_PostMessage);
+        }
+        else
+        {
+            spdlog::info("[IpcInSide_PostMessage] ProcCount:{} ", Count_PostMessage);
         }
     }
 
@@ -200,6 +230,13 @@ void IpcInSide_BroadcastSystemMessage()
     {
         return;
     }
+}
 
-
+void IpcInSide_SendMessage()
+{
+    // 消息循环的处理在 IpcInSide_BroadcastSystemMessage 中
+    UINT showMyAppMsg1 = RegisterWindowMessage(L"IpcInSide_SendMessage");
+    UINT showMyAppMsg2 = RegisterWindowMessage(L"IpcInSide_PostMessage");
+    SendMessage(HWND_BROADCAST, showMyAppMsg1, 0, 0);
+    PostMessage(HWND_BROADCAST, showMyAppMsg2, 0, 0);
 }
